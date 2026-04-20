@@ -9,6 +9,12 @@ manifest:
       revision: v3.3.0-preview3-branch
       import: true
 
+    # Bosch BHI385 Sensor API
+    - name: bhi385_sensorapi
+      path: bhi385_sensorapi
+      url: https://github.com/hkn1304/bhi385_sensorapi.git
+      revision: main
+
     # BHI385 SensorAPI (Bosch Sensortec)
     - name: bhi385_sensorapi
       path: bhi385_sensorapi

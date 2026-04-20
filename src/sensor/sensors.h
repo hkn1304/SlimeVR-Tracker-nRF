@@ -27,6 +27,7 @@
 
 #include "sensor_none.h"
 
+#include "imu/BHI385.h"
 #include "imu/BMI270.h"
 #include "imu/ICM42688.h"
 #include "imu/ICM45686.h"
@@ -55,6 +56,7 @@ const char *dev_imu_names[] = {
 	"BMI160",
 	"BMI270",
 	"BMI323",
+	"BHI385",
 	"MPU-6000/MPU-6050",
 	"MPU-6500",
 	"MPU-9250",
@@ -75,6 +77,7 @@ const sensor_imu_t *sensor_imus[] = {
 	&sensor_imu_none, // will not implement, too low quality
 	&sensor_imu_bmi270,
 	&sensor_imu_none,
+	&sensor_imu_bhi385,
 	&sensor_imu_none, // cardinal sin
 	&sensor_imu_none, // cardinal sin
 	&sensor_imu_none, // cardinal sin
@@ -91,24 +94,28 @@ const sensor_imu_t *sensor_imus[] = {
 	&sensor_imu_lsm6dsv,
 	&sensor_imu_ism330bx
 };
-const int i2c_dev_imu_addr_count = 2;
+const int i2c_dev_imu_addr_count = 3;
 const uint8_t i2c_dev_imu_addr[] = {
+	2,	0x28,0x29,
 	2,	0x68,0x69,
 	2,	0x6A,0x6B
 };
 const uint8_t i2c_dev_imu_reg[] = {
+	1,	0x2B,
 	3,	0x00,
 		0x72,
 		0x75,
 	1,	0x0F
 };
 const uint8_t i2c_dev_imu_id[] = {
+	1,	0x7C, // reg 0x2B
 	4,	0xEA,0xD1,0x24,0x43, // reg 0x00
 	2,	0xE9,0xE7, // reg 0x72
 	5,	0x68,0x70,0x71,0x47,0xDB, // reg 0x75
 	8,	0x22,0x69,0x6A,0x6B,0x6C,0x6D,0x70,0x71 // reg 0x0F
 };
 const int i2c_dev_imu[] = {
+	IMU_BHI385,
 	IMU_ICM20948, IMU_BMI160, IMU_BMI270, IMU_BMI323,
 	IMU_ICM45686, IMU_ICM45688,
 	IMU_MPU6050, IMU_MPU6500, IMU_MPU9250, IMU_ICM42688, IMU_ICM42688, // ICM-42688-P, ICM-42688-V

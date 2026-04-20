@@ -24,15 +24,17 @@
 #define SLIMENRF_SENSOR_FUSIONS
 
 #include "fusion_none.h"
+#include "fusion_bhi385.h"
 
 #include "motionsense/motionsense.h"
 #include "xiofusion/xiofusion.h"
 #include "vqf/vqf.h"
 
-#define FUSION_COUNT 4
+#define FUSION_COUNT 5
 
 enum fusion {
     FUSION_NONE,
+    FUSION_BHI385,
     FUSION_FUSION,
     FUSION_MOTIONSENSE,
 	FUSION_VQF
@@ -40,12 +42,14 @@ enum fusion {
 
 const char *fusion_names[] = {
     "None",
+    "BHI385 9DOF (Bosch)",
     "x-io Technologies Fusion",
     "NXP SensorFusion",
     "VQF"
 };
 const sensor_fusion_t *sensor_fusions[] = {
     &sensor_fusion_none,
+    &sensor_fusion_bhi385,
     &sensor_fusion_fusion,
     &sensor_fusion_motionsense,
     &sensor_fusion_vqf

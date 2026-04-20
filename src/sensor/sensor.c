@@ -711,6 +711,11 @@ int sensor_init(void)
 
 	// get fusion from config
 	fusion_id = CLAMP(CONFIG_2_SETTINGS_READ(CONFIG_2_SENSOR_FUSION), 0, FUSION_COUNT - 1);
+
+	// BHI385 requires its internal 9DOF fusion
+	if (sensor_imu_id == IMU_BHI385)
+		fusion_id = FUSION_BHI385;
+
 	sensor_fusion = sensor_fusions[fusion_id];
 
 	// Setup fusion

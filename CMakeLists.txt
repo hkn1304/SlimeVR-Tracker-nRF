@@ -63,10 +63,42 @@ target_sources(app PRIVATE ${files})
 FILE(GLOB_RECURSE files vqf-c/src/*.c)
 target_sources(app PRIVATE ${files})
 
+FILE(GLOB_RECURSE files bhi385_sensorapi/source/*.c)
+target_sources(app PRIVATE ${files})
+
 target_include_directories(app PRIVATE src)
 target_include_directories(app PRIVATE Fusion/Fusion)
 #target_include_directories(app PRIVATE NXP-ISSDK-SensorFusion/sources)
 target_include_directories(app PRIVATE vqf-c/src)
+target_include_directories(app PRIVATE bhi385_sensorapi/source)
+target_include_directories(app PRIVATE bhi385_sensorapi/examples)
+
+# Generate BHI385 firmware header from binary
+find_file(BHI385_FIRMWARE_BIN
+    NAMES "Bosch_Shuttle3_BHI385_BMM350C_bsxsam_ndof.fw"
+    PATHS "${CMAKE_SOURCE_DIR}/bhi385_sensorapi/firmware"
+    NO_DEFAULT_PATH
+)
+
+if(BHI385_FIRMWARE_BIN)
+    set(BHI385_FIRMWARE_HEADER "${CMAKE_BINARY_DIR}/bhi385_firmware.h")
+    add_custom_command(
+        OUTPUT ${BHI385_FIRMWARE_HEADER}
+        COMMAND ${CMAKE_COMMAND} -P ${CMAKE_SOURCE_DIR}/scripts/gen_fw.cmake
+            ${BHI385_FIRMWARE_BIN} ${BHI385_FIRMWARE_HEADER}
+        DEPENDS ${BHI385_FIRMWARE_BIN}
+        COMMENT "Generating BHI385 firmware header"
+    )
+    target_sources(app PRIVATE ${BHI385_FIRMWARE_HEADER})
+    target_include_directories(app PRIVATE ${CMAKE_BINARY_DIR})
+else()
+    message(WARNING "BHI385 firmware binary not found. Using stub firmware. Place Bosch_Shuttle3_BHI385_BMM350C_bsxsam_ndof.fw in bhi385_sensorapi/firmware/")
+    # Create a stub firmware header for compilation
+    file(WRITE "${CMAKE_BINARY_DIR}/bhi385_firmware.h"
+        "const uint8_t bhi385_firmware_image[] = {0};\nconst uint32_t bhi385_firmware_image_size = 0;\n"
+    )
+    target_include_directories(app PRIVATE ${CMAKE_BINARY_DIR})
+endif()
 
 # Force recompile for updated build timestamp
 add_custom_target(touch_util_h ALL
