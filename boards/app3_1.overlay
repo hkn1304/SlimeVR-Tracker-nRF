@@ -1,0 +1,14 @@
+/dts-v1/;
+
+&i2c0 {
+	compatible = "nordic,nrf-twim";
+	zephyr,concat-buf-size = <1023>;
+	zephyr,flash-buf-max-size = <1023>;
+	clock-frequency = <I2C_BITRATE_FAST>;
+
+	imu: imu@28 {
+		compatible = "i2c-device";
+		label = "imu";
+		reg = <0x28>;
+	};
+};
